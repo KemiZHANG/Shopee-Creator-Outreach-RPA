@@ -1,0 +1,94 @@
+{
+  "points": {
+    "creator_click": {
+      "x": 650,
+      "y": 900
+    },
+    "private_chat_click": {
+      "x": 1800,
+      "y": 480
+    },
+    "upload_image_btn": {
+      "x": 1300,
+      "y": 900
+    },
+    "file_first_image": {
+      "x": 350,
+      "y": 250
+    },
+    "file_open_btn": {
+      "x": 1020,
+      "y": 740
+    },
+    "chat_input": {
+      "x": 1400,
+      "y": 900
+    },
+    "chat_send_btn": {
+      "x": 1870,
+      "y": 900
+    },
+    "creator_page_close": {
+      "x": 1100,
+      "y": 30
+    },
+    "roll_position": {
+      "x": 1440,
+      "y": 900
+    }
+  },
+  "regions": {
+    "creator_name": {
+      "left": 520,
+      "top": 430,
+      "width": 260,
+      "height": 40
+    },
+    "chat_message_hint": {
+      "left": 1280,
+      "top": 880,
+      "width": 240,
+      "height": 45
+    }
+  },
+  "image_match": {
+    "enabled": false,
+    "confidence": 0.8
+  },
+  "ocr": {
+    "tesseract_path": "",
+    "lang": "chi_sim+eng",
+    "psm": 7,
+    "creator_name_min_length": 4,
+    "creator_name_min_alnum_ratio": 0.65,
+    "creator_name_min_ascii_ratio": 0.85,
+    "creator_name_allowed_pattern": "^[a-zA-Z0-9._-]+$",
+    "chat_hint_lang": "eng",
+    "chat_hint_psm": 7,
+    "private_chat_button_lang": "eng",
+    "private_chat_button_psm": 6,
+    "private_chat_button_scale": 2,
+    "private_chat_search_mode": "top_right_action_area",
+    "private_chat_search_left_ratio": 0.34,
+    "private_chat_search_top_ratio": 0.05,
+    "private_chat_search_width_ratio": 0.62,
+    "private_chat_search_height_ratio": 0.5,
+    "private_chat_allow_fixed_fallback": false,
+    "private_chat_offset_step_y": 20,
+    "private_chat_offset_attempts_each_direction": 2
+  },
+  "timings": {
+    "default_start_delay_seconds": 3.0,
+    "after_creator_click_seconds": 6.5,
+    "after_creator_retry_seconds": 2.6,
+    "after_private_chat_click_seconds": 4.7,
+    "after_private_chat_retry_seconds": 2.6,
+    "after_upload_click_seconds": 3.9,
+    "after_file_open_seconds": 7.8,
+    "after_chat_input_click_seconds": 1.6,
+    "after_paste_seconds": 1.3,
+    "after_send_click_seconds": 4.7,
+    "after_close_click_seconds": 3.6,
+    "after_scroll_seconds": 3.1
+  }
+}

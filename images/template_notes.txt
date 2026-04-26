@@ -1,0 +1,19 @@
+# Template Image Notes
+
+Place your local UI template screenshots in the folders below:
+
+- `images/buttons`
+- `images/dialogs`
+- `images/anchors`
+- `images/reference`
+
+Recommended template names:
+
+- `images/buttons/private_chat_icon.png`
+- `images/buttons/upload_image_btn.png`
+- `images/buttons/chat_send_btn.png`
+- `images/dialogs/creator_page_close_btn.png`
+- `images/anchors/creator_page_loaded_anchor.png`
+- `images/anchors/chat_window_loaded_anchor.png`
+
+Template screenshots are ignored by Git because they may contain platform UI, account details, or creator data.

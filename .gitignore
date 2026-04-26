@@ -1,0 +1,40 @@
+# Local assistant/editor state
+.claude/
+.vscode/
+.idea/
+
+# Local machine configuration
+config/automation_config.json
+
+# Runtime data
+data/*
+!data/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
+*.xlsx
+logs/*
+!logs/.gitkeep
+
+# Local template screenshots
+images/**/*.png
+images/**/*.jpg
+images/**/*.jpeg
+!images/**/.gitkeep
+!images/**/template_notes.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS files
+.DS_Store
+Thumbs.db
