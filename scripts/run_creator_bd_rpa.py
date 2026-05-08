@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
+from auth_client import AuthorizationError, enforce_authorization
 from automation_utils import (
     DB_PATH,
     IMAGES_DIR,
@@ -253,6 +254,12 @@ def check_required_files() -> None:
 
 def main() -> None:
     """Run the creator BD automation."""
+    try:
+        enforce_authorization()
+    except AuthorizationError as exc:
+        print(f"Authorization failed. Program stopped: {exc}")
+        return
+
     ensure_dirs()
     logger = RunLogger()
 
