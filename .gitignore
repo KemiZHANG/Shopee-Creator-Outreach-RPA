@@ -5,6 +5,7 @@
 
 # Local machine configuration
 config/automation_config.json
+auth_config.json
 
 # Runtime data
 data/*
@@ -29,6 +30,10 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+build/
+dist/
+release/
+*.spec
 
 # Virtual environments
 .venv/
