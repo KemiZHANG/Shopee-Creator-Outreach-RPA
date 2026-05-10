@@ -1,4 +1,4 @@
-"""Online authorization gate for local RPA scripts."""
+"""Online authorization gate for the packaged Shopee RPA."""
 
 from __future__ import annotations
 
@@ -19,6 +19,10 @@ APP_ID = "shopee_creator_outreach_rpa"
 APP_VERSION = "1.0"
 CONFIG_FILE_NAME = "auth_config.json"
 
+# Fill this with the Aliyun authorization endpoint before the final release,
+# for example: http://SERVER_PUBLIC_IP:8000/api/authorize
+EMBEDDED_AUTH_API_URL = ""
+
 
 class AuthorizationError(Exception):
     """Raised when the current machine is not authorized to run the RPA."""
@@ -26,6 +30,10 @@ class AuthorizationError(Exception):
 
 def _truthy(value: str | None) -> bool:
     return (value or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _is_packaged() -> bool:
+    return bool(getattr(sys, "frozen", False))
 
 
 def _candidate_config_paths() -> list[Path]:
@@ -36,7 +44,7 @@ def _candidate_config_paths() -> list[Path]:
         project_dir / CONFIG_FILE_NAME,
         script_dir / CONFIG_FILE_NAME,
     ]
-    if getattr(sys, "frozen", False):
+    if _is_packaged():
         paths.insert(0, Path(sys.executable).resolve().parent / CONFIG_FILE_NAME)
     return paths
 
@@ -45,8 +53,11 @@ def _load_file_config() -> dict:
     for path in _candidate_config_paths():
         if not path.exists():
             continue
-        with path.open("r", encoding="utf-8") as file:
-            return json.load(file)
+        try:
+            with path.open("r", encoding="utf-8") as file:
+                return json.load(file)
+        except json.JSONDecodeError as exc:
+            raise AuthorizationError(f"Authorization config is invalid JSON: {path}") from exc
     return {}
 
 
@@ -71,9 +82,7 @@ def _build_device_id() -> str:
 
 
 def _build_device_label() -> str:
-    hostname = socket.gethostname()
-    username = getpass.getuser()
-    return f"{hostname}/{username}"
+    return f"{socket.gethostname()}/{getpass.getuser()}"
 
 
 def _post_json(url: str, payload: dict, timeout_seconds: float) -> dict:
@@ -90,29 +99,27 @@ def _post_json(url: str, payload: dict, timeout_seconds: float) -> dict:
 
 
 def enforce_authorization() -> None:
-    """Stop the script unless the online authorization service allows it.
+    """Stop the RPA unless the authorization service allows this machine.
 
-    Environment variables:
-    - RPA_AUTH_ENABLED=1 enables the check.
-    - RPA_AUTH_API_URL points to the authorization endpoint.
-    - RPA_LICENSE_KEY stores the user's license key; otherwise input() asks.
-    - RPA_AUTH_TIMEOUT_SECONDS customizes the request timeout.
+    In packaged exe mode, authorization is always enabled and the server URL is
+    embedded at build time. The local config only supplies the license key.
     """
     config = _load_file_config()
-    enabled = _get_setting(config, "enabled", "RPA_AUTH_ENABLED", "false")
+    packaged = _is_packaged()
+    enabled = "true" if packaged else _get_setting(config, "enabled", "RPA_AUTH_ENABLED", "false")
     if not _truthy(enabled):
         print("[AUTH] Online authorization is disabled. Set RPA_AUTH_ENABLED=1 to enable it.")
         return
 
-    api_url = _get_setting(config, "api_url", "RPA_AUTH_API_URL").strip()
+    api_url = EMBEDDED_AUTH_API_URL.strip() if packaged else _get_setting(config, "api_url", "RPA_AUTH_API_URL").strip()
     if not api_url:
-        raise AuthorizationError("RPA_AUTH_API_URL is required when RPA_AUTH_ENABLED=1.")
+        raise AuthorizationError("Embedded authorization server URL is not configured.")
 
     license_key = _get_setting(config, "license_key", "RPA_LICENSE_KEY").strip()
+    if not license_key and not packaged:
+        license_key = input("Please enter license key: ").strip()
     if not license_key:
-        license_key = input("请输入授权码 / License key: ").strip()
-    if not license_key:
-        raise AuthorizationError("License key cannot be empty.")
+        raise AuthorizationError("Authorization config is missing license_key.")
 
     timeout_seconds = float(_get_setting(config, "timeout_seconds", "RPA_AUTH_TIMEOUT_SECONDS", "8"))
     payload = {

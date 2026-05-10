@@ -14,6 +14,7 @@ python -m PyInstaller `
 
 $packageDir = Join-Path $projectRoot "release\Shopee_Creator_Outreach_RPA"
 New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
+Remove-Item (Join-Path $packageDir "auth_config.json") -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path (Join-Path $packageDir "config") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $packageDir "data") | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $packageDir "logs") | Out-Null
@@ -28,5 +29,10 @@ Copy-Item "requirements.txt" $packageDir -Force
 Copy-Item "AUTHORIZATION.md" $packageDir -Force
 Copy-Item "images\template_notes.txt" (Join-Path $packageDir "images\template_notes.txt") -Force
 
+$zipPath = Join-Path $projectRoot "release\Shopee_Creator_Outreach_RPA.zip"
+Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+Compress-Archive -Path (Join-Path $packageDir "*") -DestinationPath $zipPath -Force
+
 Write-Host "Release package created:"
 Write-Host $packageDir
+Write-Host $zipPath
